@@ -13,12 +13,17 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    - name: Mask Secrets
+    - name: Debug Secrets Length
       run: |
-        echo "::add-mask::${{ secrets.APIGEE_ORG }}"
-        echo "::add-mask::${{ secrets.APIGEE_ENV }}"
-        echo "::add-mask::${{ secrets.APIGEE_USER }}"
-        echo "::add-mask::${{ secrets.APIGEE_PASS }}"
+        echo "APIGEE_ORG length: ${#APIGEE_ORG}"
+        echo "APIGEE_ENV length: ${#APIGEE_ENV}"
+        echo "APIGEE_USER length: ${#APIGEE_USER}"
+        echo "APIGEE_PASS length: ${#APIGEE_PASS}"
+      env:
+        APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
+        APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
+        APIGEE_USER: ${{ secrets.APIGEE_USER }}
+        APIGEE_PASS: ${{ secrets.APIGEE_PASS }}
 
     - name: Deploy to Apigee
       env:

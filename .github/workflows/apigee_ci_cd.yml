@@ -21,6 +21,9 @@ jobs:
     - name: Install zip utility
       run: sudo apt-get install zip
 
+    - name: Create target directory
+      run: mkdir -p target
+
     - name: Zip project files
       run: zip -r ./target/crud_sample.zip .
 

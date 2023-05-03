@@ -1,4 +1,4 @@
-name: Deploy Apigee Proxy
+name: Apigee CI/CD Pipeline
 
 on:
   push:
@@ -6,28 +6,29 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      
-    - name: Set up Python
+
+    - name: Set up Python 2.7
       uses: actions/setup-python@v2
       with:
-        python-version: '2.x' # Use a version compatible with the deploy.py script
+        python-version: 2.7
 
     - name: Install dependencies
-      run: pip install httplib2
+      run: |
+        python -m pip install --upgrade pip
+        pip install httplib2
+
+    - name: Get access token
+      run: |
+        TOKEN_RESPONSE=$(curl -X POST -H "Content-Type: application/x-www-form-urlencoded;charset=UTF-8" -d "username=${{ secrets.APIGEE_USERNAME }}" -d "password=${{ secrets.APIGEE_PASSWORD }}" -d "grant_type=password" -d "client_id=edgecli" -d "client_secret=edgeclisecret" https://login.apigee.com/oauth/token)
+        ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r .access_token)
+        echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
     - name: Deploy to Apigee
       run: |
-        python deploy.py -n $PROXY_NAME -o $APIGEE_ORG -h $APIGEE_HOST -d . -e $APIGEE_ENV -u "$APIGEE_USERNAME:$APIGEE_PASSWORD"
-      env:
-        APIGEE_USERNAME: ${{ secrets.APIGEE_USER }}
-        APIGEE_PASSWORD: ${{ secrets.APIGEE_PASS }}
-        APIGEE_ORG: microboost
-        APIGEE_ENV: eval
-        APIGEE_HOST: https://api.enterprise.apigee.com
-        PROXY_NAME: crud_sample
-        
+        python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -h ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -t $ACCESS_TOKEN

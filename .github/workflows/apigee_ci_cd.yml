@@ -3,7 +3,7 @@ name: Deploy Apigee Proxy
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:

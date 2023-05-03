@@ -27,7 +27,23 @@ jobs:
     - name: Zip project files
       run: zip -r ./target/crud_sample.zip .
 
-    - name: Deploy to Apigee
+    - name: Install jq
+      run: sudo apt-get install jq
+
+    - name: Create new API proxy revision
+      env:
+        APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
+        APIGEE_TOKEN: ${{ secrets.APIGEE_TOKEN }}
+      run: |
+        response=$(curl -X POST \
+          -H "Authorization: Bearer $APIGEE_TOKEN" \
+          -H "Content-Type: application/octet-stream" \
+          --data-binary @./target/crud_sample.zip \
+          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/apis/crud_sample/revisions")
+        revision=$(echo "$response" | jq -r '.revision')
+        echo "revision=$revision" >> $GITHUB_ENV
+
+    - name: Deploy new API proxy revision
       env:
         APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
         APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
@@ -35,6 +51,4 @@ jobs:
       run: |
         curl -X POST \
           -H "Authorization: Bearer $APIGEE_TOKEN" \
-          -H "Content-Type: application/octet-stream" \
-          --data-binary @./target/crud_sample.zip \
-          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/environments/$APIGEE_ENV/apis?name=crud_sample&action=deploy&override=true"
+          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/environments/$APIGEE_ENV/apis/crud_sample/revisions/$revision/deployments?override=true"

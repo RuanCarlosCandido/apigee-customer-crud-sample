@@ -24,8 +24,8 @@ jobs:
       run: |
         python deploy.py -n $PROXY_NAME -o $APIGEE_ORG -h $APIGEE_HOST -d . -e $APIGEE_ENV -u "$APIGEE_USERNAME:$APIGEE_PASSWORD"
       env:
-        APIGEE_USERNAME: ${{ secrets.APIGEE_USERNAME }}
-        APIGEE_PASSWORD: ${{ secrets.APIGEE_PASSWORD }}
+        APIGEE_USERNAME: ${{ secrets.APIGEE_USER }}
+        APIGEE_PASSWORD: ${{ secrets.APIGEE_PASS }}
         APIGEE_ORG: microboost
         APIGEE_ENV: eval
         APIGEE_HOST: https://api.enterprise.apigee.com

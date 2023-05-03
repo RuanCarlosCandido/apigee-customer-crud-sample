@@ -30,6 +30,9 @@ jobs:
     - name: Zip project files
       run: zip -r ./target/crud_sample.zip .
 
+    - name: List workspace files
+      run: ls -al
+
     - name: Create new API proxy revision
       env:
         APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
@@ -42,7 +45,9 @@ jobs:
           "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/apis/crud_sample/revisions" > create_revision_response.json
         revision=$(jq -r '.revision' create_revision_response.json)
         echo "revision=$revision" >> $GITHUB_ENV
-        cat create_revision_response.json
+
+    - name: Print create_revision_response.json content
+      run: cat create_revision_response.json
 
     - name: Deploy new API proxy revision
       env:
@@ -53,4 +58,6 @@ jobs:
         curl -sS -X POST \
           -H "Authorization: Bearer $APIGEE_TOKEN" \
           "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/environments/$APIGEE_ENV/apis/crud_sample/revisions/$revision/deployments?override=true" > deploy_revision_response.json
-        cat deploy_revision_response.json
+
+    - name: Print deploy_revision_response.json content
+      run: cat deploy_revision_response.json

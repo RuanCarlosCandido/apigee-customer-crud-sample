@@ -1,25 +1,28 @@
-name: Apigee CI/CD
+name: Deploy to Apigee
 
 on:
   push:
     branches:
-      - main # or master, depending on your default branch name
+      - main
 
 jobs:
-  build_and_deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Setup Node.js
+    - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: 14
 
-    - name: Install Apigee Tool
-      run: npm install -g apigeetool
+    - name: Install zip utility
+      run: sudo apt-get install zip
+
+    - name: Zip project files
+      run: zip -r ./target/crud_sample.zip .
 
     - name: Deploy to Apigee
       env:
@@ -32,4 +35,3 @@ jobs:
           -H "Content-Type: application/octet-stream" \
           --data-binary @./target/crud_sample.zip \
           "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/environments/$APIGEE_ENV/apis?name=crud_sample&action=deploy&override=true"
-

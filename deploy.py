@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import base64
 import getopt
 import httplib
@@ -12,7 +10,6 @@ import urlparse
 import xml.dom.minidom
 import zipfile
 
-
 def httpCall(verb, uri, headers, body):
     if httpScheme == 'https':
         conn = httplib.HTTPSConnection(httpHost)
@@ -24,11 +21,14 @@ def httpCall(verb, uri, headers, body):
     else:
         hdrs = headers
 
-    hdrs['Authorization'] = 'Basic %s' % base64.b64encode(UserPW)
+    if AccessToken:
+        hdrs['Authorization'] = 'Bearer %s' % AccessToken
+    else:
+        hdrs['Authorization'] = 'Basic %s' % base64.b64encode(UserPW)
+
     conn.request(verb, uri, body, hdrs)
 
     return conn.getresponse()
-
 
 def getElementText(n):
     c = n.firstChild
@@ -116,7 +116,7 @@ def printDeployments(dep):
         if 'error' in d:
             print '  Error: %s' % d['error']
 
-ApigeeHost = 'https://api.enterprise.apigee.com'
+AccessToken = None
 UserPW = None
 Directory = None
 Organization = None
@@ -125,7 +125,7 @@ Name = None
 BasePath = '/'
 ShouldDeploy = True
 
-Options = 'h:u:d:e:n:p:o:i:z:'
+Options = 'h:t:u:d:e:n:p:o:i:z:'
 
 opts = getopt.getopt(sys.argv[1:], Options)[0]
 
@@ -148,6 +148,8 @@ for o in opts:
         ShouldDeploy = False
     elif o[0] == '-z':
         ZipFile = o[1]
+    elif o[0] == '-t':
+        AccessToken = o[1]
 
 if UserPW == None or \
         (Directory == None and ZipFile == None) or \

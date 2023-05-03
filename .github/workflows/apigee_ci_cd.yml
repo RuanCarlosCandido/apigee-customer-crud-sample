@@ -38,26 +38,18 @@ jobs:
         APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
         APIGEE_TOKEN: ${{ secrets.APIGEE_TOKEN }}
       run: |
-        curl -sS -X POST \
+        response=$(curl -sS -X POST -w "\nHTTP_STATUS:%{http_code}" \
           -H "Authorization: Bearer $APIGEE_TOKEN" \
           -H "Content-Type: application/octet-stream" \
           --data-binary @./target/crud_sample.zip \
-          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/apis/crud_sample/revisions" > create_revision_response.json
+          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/apis/crud_sample/revisions")
+        echo "Response: $response"
+        http_status=$(echo "$response" | grep -oP "HTTP_STATUS:\K\d+")
+        response_body=$(echo "$response" | sed '/HTTP_STATUS:\d\+$/d')
+        echo "HTTP status: $http_status"
+        echo "Response body: $response_body" > create_revision_response.json
         revision=$(jq -r '.revision' create_revision_response.json)
         echo "revision=$revision" >> $GITHUB_ENV
-
-    - name: Print create_revision_response.json content
-      run: echo "Create new API proxy revision response:" && cat create_revision_response.json
-
-    - name: Deploy new API proxy revision
-      env:
-        APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
-        APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-        APIGEE_TOKEN: ${{ secrets.APIGEE_TOKEN }}
-      run: |
-        curl -sS -X POST \
-          -H "Authorization: Bearer $APIGEE_TOKEN" \
-          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/environments/$APIGEE_ENV/apis/crud_sample/revisions/$revision/deployments?override=true" > deploy_revision_response.json
-
+        
     - name: Print deploy_revision_response.json content
       run: cat deploy_revision_response.json

@@ -117,11 +117,11 @@ def printDeployments(dep):
             print '  Error: %s' % d['error']
 
 ApigeeHost = 'https://api.enterprise.apigee.com'
-UserPW = None
+UserPW = os.getenv('APIGEE_PASS')
 Directory = None
-Organization = None
-Environment = None
-Name = None
+Organization = os.getenv('APIGEE_ORG')
+Environment = os.getenv('APIGEE_ENV')
+Name = os.getenv('APIGEE_PROXY_NAME')
 BasePath = '/'
 ShouldDeploy = True
 

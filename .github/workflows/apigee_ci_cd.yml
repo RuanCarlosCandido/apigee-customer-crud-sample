@@ -47,7 +47,7 @@ jobs:
         echo "revision=$revision" >> $GITHUB_ENV
 
     - name: Print create_revision_response.json content
-      run: cat create_revision_response.json
+      run: echo "Create new API proxy revision response:" && cat create_revision_response.json
 
     - name: Deploy new API proxy revision
       env:

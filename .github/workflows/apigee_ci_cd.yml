@@ -1,66 +1,47 @@
-name: Deploy to Apigee
+name: Deploy API Proxy to Apigee
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Install Python
+      uses: actions/setup-python@v2
       with:
-        node-version: 14
+        python-version: '3.x'
 
-    - name: Install zip utility
-      run: sudo apt-get install zip
-
-    - name: Install jq
-      run: sudo apt-get install jq
-
-    - name: Create target directory
-      run: mkdir -p target
-
-    - name: Zip project files
-      run: zip -r ./target/crud_sample.zip .
-
-    - name: Create new API proxy revision
-      env:
-        APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
-        APIGEE_TOKEN: ${{ secrets.APIGEE_TOKEN }}
+    - name: Install dependencies
       run: |
-        response=$(curl -sS -X POST -w "\nHTTP_STATUS:%{http_code}" \
-          -H "Authorization: Bearer $APIGEE_TOKEN" \
-          -H "Content-Type: application/octet-stream" \
-          --data-binary @./target/crud_sample.zip \
-          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/apis/crud_sample/revisions")
-        echo "Response: $response"
-        http_status=$(echo "$response" | grep -oP "HTTP_STATUS:\K\d+")
-        response_body=$(echo "$response" | sed '/HTTP_STATUS:\d\+$/d')
-        echo "HTTP status: $http_status"
-        echo "Response body: $response_body" > create_revision_response.json
-        revision=$(jq -r '.revision' create_revision_response.json)
-        echo "revision=$revision" >> $GITHUB_ENV
-        cat create_revision_response.json
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-    - name: Deploy new API proxy revision
+    - name: Create ZIP file of API Proxy
+      run: |
+        zip -r crud_sample.zip apiproxy -x "*.DS_Store"
+
+    - name: Deploy API Proxy to Apigee
       env:
+        APIGEE_HOST: ${{ secrets.APIGEE_HOST }}
+        APIGEE_USER: ${{ secrets.APIGEE_USER }}
+        APIGEE_PASS: ${{ secrets.APIGEE_PASS }}
         APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
         APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-        APIGEE_TOKEN: ${{ secrets.APIGEE_TOKEN }}
+        APIGEE_NAME: 'crud_sample'
       run: |
-        response=$(curl -sS -X POST -w "\nHTTP_STATUS:%{http_code}" \
-          -H "Authorization: Bearer $APIGEE_TOKEN" \
-          "https://api.enterprise.apigee.com/v1/organizations/$APIGEE_ORG/environments/$APIGEE_ENV/apis/crud_sample/revisions/$revision/deployments?override=true")
-        echo "Response: $response"
-        http_status=$(echo "$response" | grep -oP "HTTP_STATUS:\K\d+")
-        response_body=$(echo "$response" | sed '/HTTP_STATUS:\d\+$/d')
-        echo "HTTP status: $http_status"
-        echo "Response body: $response_body" > deploy_revision_response.json
-        cat deploy_revision_response.json
+        python deploy.py -n "$APIGEE_NAME" \
+                         -d ./ \
+                         -u "$APIGEE_USER:$APIGEE_PASS" \
+                         -o "$APIGEE_ORG" \
+                         -e "$APIGEE_ENV" \
+                         -p / \
+                         -h "$APIGEE_HOST" \
+                         -i

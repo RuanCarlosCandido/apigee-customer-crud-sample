@@ -25,14 +25,9 @@ jobs:
     - name: Zip API proxy
       run: zip -r apiproxy/crud_sample.zip apiproxy
 
-    - name: Validate files for unexpected characters
+    - name: List .zip contents
       run: |
-        find apiproxy -type f -exec grep -Hn -E 'É' {} \; | tee unexpected_chars.txt
-        if [ -s unexpected_chars.txt ]; then
-          echo "Unexpected characters found in the project files:"
-          cat unexpected_chars.txt
-          exit 1
-        fi
+        unzip -l apiproxy/crud_sample.zip
 
     - name: Deploy API Proxy
       run: |

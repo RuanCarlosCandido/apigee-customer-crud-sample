@@ -25,6 +25,15 @@ jobs:
     - name: Zip API proxy
       run: zip -r apiproxy/crud_sample.zip apiproxy
 
+    - name: Validate files for unexpected characters
+      run: |
+        find apiproxy -type f -exec grep -Hn -E 'É' {} \; | tee unexpected_chars.txt
+        if [ -s unexpected_chars.txt ]; then
+          echo "Unexpected characters found in the project files:"
+          cat unexpected_chars.txt
+          exit 1
+        fi
+
     - name: Deploy API Proxy
       run: |
         python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'

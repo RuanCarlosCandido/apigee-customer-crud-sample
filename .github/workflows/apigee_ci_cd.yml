@@ -1,4 +1,4 @@
-name: Deploy to Apigee
+name: Deploy Apigee Proxy
 
 on:
   push:
@@ -8,32 +8,23 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        node-version: 14
+        python-version: 3.8
 
-    - name: Install apigeetool
-      run: npm install -g apigeetool
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests google-auth google-auth-oauthlib google-auth-httplib2
+    
+    - name: Zip API proxy
+      run: zip -r apiproxy/crud_sample.zip apiproxy
 
     - name: Deploy API Proxy
-      env:
-        APIGEE_ORG: ${{ secrets.APIGEE_ORG }}
-        APIGEE_ENV: ${{ secrets.APIGEE_ENV }}
-        APIGEE_SERVICE_ACCOUNT_KEY: ${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}
       run: |
-        echo "$APIGEE_SERVICE_ACCOUNT_KEY" > service_account_key.json
-        apigeetool deployproxy \
-          -o "$APIGEE_ORG" \
-          -e "$APIGEE_ENV" \
-          -n crud_sample \
-          -d . \
-          -V \
-          --googleapi \
-          -S service_account_key.json
-        rm service_account_key.json
+        python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'

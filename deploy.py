@@ -3,11 +3,14 @@ import json
 import os
 import requests
 from google.oauth2 import service_account
+from google.auth.transport.requests import Request
 
 def get_access_token(service_account_key):
     credentials = service_account.Credentials.from_service_account_info(service_account_key)
     scoped_credentials = credentials.with_scopes(['https://www.googleapis.com/auth/cloud-platform'])
-    access_token = scoped_credentials.get_access_token().access_token
+    request = Request()
+    scoped_credentials.refresh(request)
+    access_token = scoped_credentials.token
     return access_token
 
 def deploy_proxy(proxy_name, org_name, host, directory, environment, service_account_key):

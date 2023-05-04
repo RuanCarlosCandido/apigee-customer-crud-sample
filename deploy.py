@@ -75,17 +75,19 @@ Name = None
 BasePath = '/'
 ShouldDeploy = True
 
-Options = 'h:u:d:e:n:p:o:i:z:'
+Options = 'h:a:u:d:e:n:p:o:i:z:'
 
 opts, args = getopt.getopt(sys.argv[1:], Options)
 
-for o, a in opts:
+for o, v in opts:
     if o == '-n':
-        Name = a
+        Name = v
     elif o == '-o':
-        Organization = a
+        Organization = v
     elif o == '-h':
-        ApigeeHost = a
+        ApigeeHost = v
+    elif o == '-a':
+        ApigeeHost = v
     elif o == '-d':
         Directory = a
     elif o == '-e':

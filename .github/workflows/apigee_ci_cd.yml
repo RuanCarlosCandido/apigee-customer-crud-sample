@@ -25,5 +25,6 @@ jobs:
     - name: Zip API proxy
       run: zip -r apiproxy/crud_sample.zip apiproxy
 
-    - name: Deploy proxy
-      run: python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -a https://*** ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'
+    - name: Deploy API Proxy
+      run: |
+        python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.ORG_NAME }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.ENV_NAME }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'

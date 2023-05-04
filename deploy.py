@@ -37,10 +37,10 @@ def deploy_proxy(proxy_name, org_name, host, directory, environment, service_acc
         print(f'Successfully deployed revision {revision} to {environment} environment.')
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='Deploy an Apigee proxy')
     parser.add_argument('-n', '--name', required=True, help='Proxy name')
-    parser.add_argument('-o', '--org', required=True, help='Apigee organization name')
-    parser.add_argument('-h', '--host', required=True, help='Apigee API host')
+    parser.add_argument('-o', '--org', required=True, help='Apigee organization')
+    parser.add_argument('-a', '--host', required=True, help='Apigee API host')  # Change this line
     parser.add_argument('-d', '--directory', required=True, help='Proxy directory')
     parser.add_argument('-e', '--env', required=True, help='Apigee environment')
     parser.add_argument('-k', '--key', required=True, help='Apigee service account key (JSON string)')

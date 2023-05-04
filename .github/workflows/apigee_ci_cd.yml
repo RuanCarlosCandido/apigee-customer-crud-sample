@@ -27,4 +27,4 @@ jobs:
 
     - name: Deploy API Proxy
       run: |
-        python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.ORG }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'
+        python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'

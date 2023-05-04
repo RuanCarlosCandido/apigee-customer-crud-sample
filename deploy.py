@@ -89,17 +89,17 @@ for o, v in opts:
     elif o == '-a':
         ApigeeHost = v
     elif o == '-d':
-        Directory = a
+        Directory = v
     elif o == '-e':
-        Environment = a
+        Environment = v
     elif o == '-p':
-        BasePath = a
+        BasePath = v
     elif o == '-k':
         APIGEE_SERVICE_ACCOUNT_KEY = v
     elif o == '-i':
         ShouldDeploy = False
     elif o == '-z':
-        ZipFile = a
+        ZipFile = v
 
 if APIGEE_SERVICE_ACCOUNT_KEY is None or \
         (Directory is None and ZipFile is None) or \

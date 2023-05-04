@@ -23,4 +23,4 @@ jobs:
         pip install requests google-auth google-auth-oauthlib google-auth-httplib2
 
     - name: Deploy proxy
-      run: python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -h ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'
+      run: python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'

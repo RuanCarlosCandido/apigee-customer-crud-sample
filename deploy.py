@@ -75,7 +75,7 @@ Name = None
 BasePath = '/'
 ShouldDeploy = True
 
-Options = 'h:a:u:d:e:n:p:o:i:z:'
+Options = 'h:a:u:d:e:n:p:o:i:z:k:'
 
 opts, args = getopt.getopt(sys.argv[1:], Options)
 
@@ -94,8 +94,8 @@ for o, v in opts:
         Environment = a
     elif o == '-p':
         BasePath = a
-    elif o == '-u':
-        APIGEE_SERVICE_ACCOUNT_KEY = a
+    elif o == '-k':
+        APIGEE_SERVICE_ACCOUNT_KEY = v
     elif o == '-i':
         ShouldDeploy = False
     elif o == '-z':
@@ -107,7 +107,7 @@ if APIGEE_SERVICE_ACCOUNT_KEY is None or \
         Name is None or \
         Organization is None:
     print("""Usage: deploy.py -n [name] (-d [directory name] | -z [zipfile])
-              -e [environment] -u [apigee_service_account_key] -o [organization]
+              -e [environment] -u [apigee_service_account_key] -o [organization] -k [api_key]
               [-p [base path] -h [apigee API url] -i]
     base path defaults to "/"
     Apigee URL defaults to "https://api.enterprise.apigee.com"

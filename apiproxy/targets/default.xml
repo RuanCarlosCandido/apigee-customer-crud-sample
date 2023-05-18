@@ -11,8 +11,4 @@
         <Response/>
     </PostFlow>
     <Flows/>
-    <HTTPTargetConnection>
-        <Properties/>
-        <URL>http://mocktarget.apigee.net</URL>
-    </HTTPTargetConnection>
 </TargetEndpoint>

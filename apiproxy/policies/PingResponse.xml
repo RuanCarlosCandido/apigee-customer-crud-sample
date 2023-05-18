@@ -33,7 +33,6 @@
         <Headers/>
         <QueryParams/>
         <FormParams/>
-        <!-- <Verb>GET</Verb> -->
         <Path/>
     </Set>
     <AssignVariable>

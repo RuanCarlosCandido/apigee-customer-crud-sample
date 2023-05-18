@@ -33,7 +33,6 @@
         <Headers/>
         <QueryParams/>
         <FormParams/>
-        <!-- <Verb>GET</Verb> -->
         <Payload contentType="application/json">
             {
                 "id": {urirequest.customerID},

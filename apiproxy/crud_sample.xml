@@ -1,18 +1,2 @@
 <APIProxy revision="22" name="crud_sample">
-    <DisplayName>helloworld</DisplayName>
-    <Description></Description>
-    <CreatedAt>1681907487215</CreatedAt>
-    <LastModifiedAt>1681907487215</LastModifiedAt>
-    <BasePaths>/customers</BasePaths>
-    <Policies>
-        <Policy>getCustomerMock</Policy>
-        <Policy>Extract-Path-Parameters</Policy>
-        <Policy>PingResponse</Policy>
-    </Policies>
-    <ProxyEndpoints>
-        <ProxyEndpoint>default</ProxyEndpoint>
-    </ProxyEndpoints>
-    <TargetEndpoints>
-        <TargetEndpoint>default</TargetEndpoint>
-    </TargetEndpoints>
 </APIProxy>

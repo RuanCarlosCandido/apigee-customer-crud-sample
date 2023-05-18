@@ -1,11 +1,1 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ExtractVariables continueOnError="false" enabled="true" name="Extract-Path-Parameters">
-    <DisplayName>Extract Path Parameters</DisplayName>
-    <Properties/>
-    <URIPath>
-        <Pattern ignoreCase="true">/getCustomer/{customerID}</Pattern>
-    </URIPath>
-    <VariablePrefix>urirequest</VariablePrefix>
-    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
-    <Source clearPayload="false">request</Source>
-</ExtractVariables>

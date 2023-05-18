@@ -120,7 +120,7 @@ httpScheme = url.scheme
 httpHost = url.netloc
 
 # Authenticate using the service account key
-creds = service_account.Credentials.from_service_account_file(APIGEE_SERVICE_ACCOUNT_KEY, scopes=['https://www.googleapis.com/auth/cloud-platform'])
+creds = service_account.Credentials.from_service_account_info(json.loads(APIGEE_SERVICE_ACCOUNT_KEY), scopes=['https://www.googleapis.com/auth/cloud-platform'])
 creds.refresh(Request())
 access_token = creds.token
 

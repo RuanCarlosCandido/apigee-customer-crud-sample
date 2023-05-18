@@ -21,6 +21,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install requests google-auth google-auth-oauthlib google-auth-httplib2
+
+    - name: Write service account key to file
+      run: echo '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}' > service_account_key.json
     
     - name: Zip API proxy
       run: zip -r apiproxy/crud_sample.zip apiproxy
@@ -31,4 +34,4 @@ jobs:
 
     - name: Deploy API Proxy
       run: |
-        python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k '${{ secrets.APIGEE_SERVICE_ACCOUNT_KEY }}'
+        python deploy.py -n ${{ secrets.PROXY_NAME }} -o ${{ secrets.APIGEE_ORG }} -a ${{ secrets.APIGEE_HOST }} -d . -e ${{ secrets.APIGEE_ENV }} -k 'service_account_key.json'

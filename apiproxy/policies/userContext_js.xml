@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Javascript async="false" continueOnError="false" enabled="true" timeLimit="200" name="userContext_js">
+    <DisplayName>userContext_js</DisplayName>
+    <Properties/>
+    <ResourceURL>jsc://userContext_js.js</ResourceURL>
+</Javascript>

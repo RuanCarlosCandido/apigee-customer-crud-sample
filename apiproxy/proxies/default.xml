@@ -23,6 +23,9 @@
                 <Step>
                     <Name>Extract-Path-Parameters</Name>
                 </Step>
+                <Step>
+                    <Name>userContext_js</Name>
+                </Step>
             </Request>
             <Response>
                 <Step>
